@@ -4,7 +4,7 @@
 
 #include <QMessageBox>
 #include <QtConcurrent>
-
+#include <QSslSocket>
 #include <QObject>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     net = new NetworkTools();
-
+    qDebug() << QSslSocket::supportsSsl();
     connect( ui->pushButton, SIGNAL(clicked()), this, SLOT(printNetworkResults()) );
 
 }
