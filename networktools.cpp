@@ -11,11 +11,12 @@
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkAccessManager>
 
-#include <QMessageBox>
+#include <QtConcurrent/QtConcurrent>
 
 NetworkTools::NetworkTools()
 {
     qDebug() << "NetworkTools created";
+    resultNotFound = false;
 }
 
 void NetworkTools::getRequest(QString url, QVector<QString> headers)
@@ -75,6 +76,7 @@ void NetworkTools::getRequest(QString url, QVector<QString> headers)
             qDebug() << reply->error();
             qDebug() << "";
             QJsonObject jobj;
+            jobj.insert("Error", reply->error());
             emit getCompleted(jobj);
         }
 
@@ -214,6 +216,28 @@ void NetworkTools::getSongInfo(QString token, QString songName, MainWindow *pare
     *conn = QObject::connect(this, &NetworkTools::getCompleted, [=](QJsonObject obj) {
         emit parent->songResultCompleted(obj);
         // Disconnect lambda
+        QObject::disconnect(*conn);
+    });
+
+    getRequest(url, vec);
+}
+
+void NetworkTools::getRecommendations(QString token, QString songId, MainWindow *parent)
+{
+    QVector<QString> vec;
+    vec.push_back("Content-Type");
+    vec.push_back("application/json");
+
+    QString auth = "Bearer " + token;
+    vec.push_back("Authorization");
+    vec.push_back(auth);
+
+    QString url = "https://api.spotify.com/v1/recommendations?seed_tracks=" + songId + "&limit=100";
+
+    auto conn = std::make_shared<QMetaObject::Connection>();
+    *conn = QObject::connect(this, &NetworkTools::getCompleted, [=](QJsonObject obj) {
+        emit parent->recommendedCompleted(obj);
+
         QObject::disconnect(*conn);
     });
 

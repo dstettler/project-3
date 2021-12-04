@@ -11,11 +11,13 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    networktools.cpp
+    networktools.cpp \
+    spotifysongsarray.cpp
 
 HEADERS += \
     mainwindow.h \
-    networktools.h
+    networktools.h \
+    spotifysongsarray.h
 
 FORMS += \
     mainwindow.ui

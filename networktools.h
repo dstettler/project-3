@@ -15,9 +15,13 @@ class NetworkTools : public QObject
 signals:
     void postCompleted(QJsonObject obj);
     void getCompleted(QJsonObject obj);
+    void recRes(QJsonObject obj);
+    void recSearch(QJsonObject obj);
 
 private:
     QNetworkAccessManager manager;
+    bool resultNotFound;
+    QString token;
 
 public:
     NetworkTools();
@@ -28,6 +32,10 @@ public:
     void searchSong(QString token, QString query, MainWindow* parent);
     // Emits QJsonObject to parent
     void getSongInfo(QString token, QString songName, MainWindow* parent);
+    // Emits QJsonArray to parent
+    void getRecommendations(QString token, QString songId, MainWindow* parent);
+
+    void recommendationsLoop(MainWindow* parent);
 
     void getRequest(QString url, QVector<QString> headers);
     void postRequest(QString url, QVector<QString> headers, QString body);
