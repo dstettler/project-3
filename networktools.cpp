@@ -11,12 +11,23 @@
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkAccessManager>
 
+#include <QList>
+#include <QVariantList>
+
+#include <QQmlEngine>
+#include <QQmlComponent>
+#include <QtQuick/QQuickItem>
+#include <QObject>
+
+#include <QJSValue>
+
 #include <QtConcurrent/QtConcurrent>
+
+// Lots of includes dang
 
 NetworkTools::NetworkTools()
 {
     qDebug() << "NetworkTools created";
-    resultNotFound = false;
 }
 
 void NetworkTools::getRequest(QString url, QVector<QString> headers)
@@ -147,6 +158,38 @@ void NetworkTools::postRequest(QString url, QVector<QString> headers, QString bo
     });
 }
 
+void NetworkTools::getToken()
+{
+    // Generate the authentication information for the header
+    // NOTE: these probably shouldn't be constants in the program, but it works for now
+    QString client_id = "5667d65d47f143d8922b8cfeea1f00e4";
+    QString client_secret = "0a1292ce57ce4c76933a223cb3ce1c88";
+    QString auth = client_id + ":" + client_secret;
+    auth = "Basic " + auth.toUtf8().toBase64();
+
+    QVector<QString> headers;
+    headers.push_back("Content-Type");
+    headers.push_back("application/x-www-form-urlencoded");
+    headers.push_back("Authorization");
+    headers.push_back(auth);
+
+    QJsonObject result;
+
+    auto conn = std::make_shared<QMetaObject::Connection>();
+    *conn = QObject::connect(this, &NetworkTools::postCompleted, [=](QJsonObject obj) {
+        QString token = obj.find("access_token").value().toString();
+
+        emit tokenFound(token);
+        QObject::disconnect(*conn);
+    });
+
+    postRequest(
+                "https://accounts.spotify.com/api/token",
+                headers,
+                "grant_type=client_credentials");
+
+}
+
 void NetworkTools::getToken(MainWindow* parent)
 {
     // Generate the authentication information for the header
@@ -222,24 +265,25 @@ void NetworkTools::getSongInfo(QString token, QString songName, MainWindow *pare
     getRequest(url, vec);
 }
 
-void NetworkTools::getRecommendations(QString token, QString songId, MainWindow *parent)
+
+
+void NetworkTools::recommendationsLoop(QString songId, MainWindow *parent)
 {
-    QVector<QString> vec;
-    vec.push_back("Content-Type");
-    vec.push_back("application/json");
+    QQmlEngine engine;
 
-    QString auth = "Bearer " + token;
-    vec.push_back("Authorization");
-    vec.push_back(auth);
+    QQmlComponent component(&engine, QUrl("qrc:main/dummy.qml"), QQmlComponent::PreferSynchronous);
 
-    QString url = "https://api.spotify.com/v1/recommendations?seed_tracks=" + songId + "&limit=100";
+    qDebug() << component.errorString();
+    if (component.status() == QQmlComponent::Ready)
+    {
+        QObject *object = component.create();
 
-    auto conn = std::make_shared<QMetaObject::Connection>();
-    *conn = QObject::connect(this, &NetworkTools::getCompleted, [=](QJsonObject obj) {
-        emit parent->recommendedCompleted(obj);
+        QString list;
 
-        QObject::disconnect(*conn);
-    });
-
-    getRequest(url, vec);
+        // Do not run a synchronous network request on the UI thread, you say?
+        // Nay I say, nay
+        // This *will* freeze the process
+        QMetaObject::invokeMethod(object, "doRecLoop", Q_RETURN_ARG(QString, list), Q_ARG(QString, songId));
+        emit (parent->recommendedCompleted(list));
+    }
 }

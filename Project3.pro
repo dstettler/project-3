@@ -1,8 +1,8 @@
-QT       += core gui concurrent network qml
+QT += core gui concurrent network qml quick
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++11 qml_debug
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -30,6 +30,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
+RESOURCES += \
     NetworkTools.js \
-    dummy.qml
+    dummy.qml \
+    qml.qrc

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/main">
+        <file>dummy.qml</file>
+        <file>NetworkTools.js</file>
+    </qresource>
+</RCC>
