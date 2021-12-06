@@ -1,4 +1,4 @@
-QT       += core gui concurrent network
+QT       += core gui concurrent network qml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,15 +12,18 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     networktools.cpp \
-    spotifysongsarray.cpp
+    spotifysongsarray.cpp \
+    startpage.cpp
 
 HEADERS += \
     mainwindow.h \
     networktools.h \
-    spotifysongsarray.h
+    spotifysongsarray.h \
+    startpage.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    startpage.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
