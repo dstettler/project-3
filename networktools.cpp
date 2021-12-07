@@ -284,6 +284,8 @@ void NetworkTools::recommendationsLoop(QString songId, MainWindow *parent)
         // Nay I say, nay
         // This *will* freeze the process
         QMetaObject::invokeMethod(object, "doRecLoop", Q_RETURN_ARG(QString, list), Q_ARG(QString, songId));
-        emit (parent->recommendedCompleted(list));
+        QJsonDocument doc = QJsonDocument::fromJson(list.toUtf8());
+        QJsonArray arr = doc.array();
+        emit (parent->recommendedCompleted(arr));
     }
 }
