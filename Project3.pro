@@ -1,5 +1,5 @@
 QT += core gui concurrent network qml quick
-
+QT += multimedia
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11 qml_debug
@@ -24,6 +24,7 @@ HEADERS += \
 FORMS += \
     mainwindow.ui \
     startpage.ui
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
