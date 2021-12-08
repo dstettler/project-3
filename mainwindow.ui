@@ -14,7 +14,7 @@
    <string>Tempo Match</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(83, 83, 83);
+   <string notr="true">background-color: rgb(33,33,33);
 color: rgb(255,255,255);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -85,12 +85,11 @@ color: rgb(255,255,255);</string>
            </size>
           </property>
           <property name="autoFillBackground">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="styleSheet">
-           <string notr="true">
-color: rgb(255, 255, 255);
-backgrouund-color: rgb(29,185,84);
+           <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(29,185,84);
 
 </string>
           </property>
@@ -309,7 +308,8 @@ backgrouund-color: rgb(29,185,84);
       </property>
       <property name="styleSheet">
        <string notr="true">color: rgb(255,255,255);
-color-background: rgb(29,185,84);
+
+background-color: rgb(29,185,84);
 </string>
       </property>
       <property name="text">

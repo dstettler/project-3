@@ -19,33 +19,36 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << QSslSocket::supportsSsl();
 
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(printNetworkResults()));
-    //connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(itemReleasedSlot()));
     connect(this, SIGNAL(songListCompleted()), this, SLOT(itemReleasedSlot()));
     connect(this, SIGNAL(songListCompleted()), this, SLOT(icons()));
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(itemClickedSlot(QListWidgetItem*)));
-    //connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(itemReleasedSlot()));
     connect(ui->toolButton, SIGNAL(clicked()), this, SLOT(playSongOne()));
     connect(ui->toolButton_2, SIGNAL(clicked()), this, SLOT(playSongTwo()));
     connect(ui->loadMore, SIGNAL(clicked()), this, SLOT(printNetworkResults()));
-    //connect(this, SIGNAL(emittingCompleted(QNetworkReply*, QString)), this, SLOT(downloadImageDoneIcon(QNetworkReply*, QString)));
 
-    QNetworkAccessManager *manager2 = new QNetworkAccessManager(this);
+    /*QNetworkAccessManager *manager2 = new QNetworkAccessManager(this);
     connect(manager2, &QNetworkAccessManager::finished, this, &MainWindow::downloadPlayDoneOg);
 
-    QUrl play = QUrl("https://cdn2.iconfinder.com/data/icons/media-player-ui/512/Media-Icon-13-512.png");
+    //QUrl play = QUrl("https://cdn2.iconfinder.com/data/icons/media-player-ui/512/Media-Icon-13-512.png");
+    QUrl play = QUrl("https://jccdallas.org/wp-content/uploads/2020/06/Spotify-Play-Button.png");
     QNetworkRequest playRequestOg(play);
     manager2->get(playRequestOg);
-
-
 
 
 
     QNetworkAccessManager *manager3 = new QNetworkAccessManager(this);
     connect(manager3, &QNetworkAccessManager::finished, this, &MainWindow::downloadPauseDoneOg);
 
-    QUrl pause = QUrl("https://cdn4.iconfinder.com/data/icons/media-buttons-1/200/757-512.png");
+    //QUrl pause = QUrl("https://cdn4.iconfinder.com/data/icons/media-buttons-1/200/757-512.png");
+    QUrl pause = QUrl("https://cdn-icons.flaticon.com/png/128/1710/premium/1710005.png?token=exp=1638997083~hmac=94c271f495e6bfe0de4094180114c3e0");
     QNetworkRequest pauseRequest(pause);
-    manager3->get(pauseRequest);
+    manager3->get(pauseRequest);*/
+
+    //playButton.loadFromData(");
+
+    ui->toolButton->setIcon(QIcon(":/images/play.png"));
+    ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
+
 
 
     songId = nullptr;
@@ -98,7 +101,7 @@ void MainWindow::printNetworkResults()
 
     if (loaded) {
 
-        for (int j = 0; j < 100; j++) {
+
 
 
         connect(this, &MainWindow::recommendedCompleted, [=] (QJsonArray obj) {
@@ -141,7 +144,7 @@ void MainWindow::printNetworkResults()
         });
 
         net->recommendationsLoop(lastToken, this);
-        }
+
     }
     else {
         connect(this, &MainWindow::tokenRequestCompleted, [=] (QString token) {
@@ -186,7 +189,6 @@ void MainWindow::printNetworkResults()
                        songToPlay[songToAdd] = songInfoMap["preview_url"].toString();
                        ui->listWidget->addItem(songToAdd);
 
-                       //managerBoss[songToAdd] = new QNetworkAccessManager(this);
                    }
                    lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();
                    loaded = true;
@@ -214,7 +216,7 @@ void MainWindow::itemClickedSlot (QListWidgetItem * itemClicked)
     songTwoToggle = false;
     player2->stop();
     ui->toolButton_2->setEnabled(true);
-
+    ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
     qDebug() << songToPlay[songClicked].toString();
     if (songToPlay[songClicked].toString() == "") {
         ui->toolButton_2->setEnabled(false);
@@ -299,17 +301,22 @@ void MainWindow::on_actionHome_triggered()
 void MainWindow::playSongOne() {
     player2->stop();
     songTwoToggle = false;
+    ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
     if (!songOneToggle) {
         player->setMedia(QUrl(songToPlay[originalString].toString()));
         player->setVolume(30);
         player->play();
         songOneToggle = true;
         ui->toolButton->setIcon(QIcon(pauseButton));
+        ui->toolButton->setIcon(QIcon(":/images/pause.png"));
+
     }
     else {
         player->stop();
         songOneToggle = false;
         ui->toolButton->setIcon(QIcon(playButton));
+        ui->toolButton->setIcon(QIcon(":/images/play.png"));
+
     }
 
 
@@ -317,19 +324,23 @@ void MainWindow::playSongOne() {
 void MainWindow::playSongTwo() {
     player->stop();
     songOneToggle = false;
+    ui->toolButton->setIcon(QIcon(":/images/play.png"));
     if (!songTwoToggle) {
 
         player2->setMedia(QUrl(songToPlay[songClicked].toString()));
         player2->setVolume(30);
         player2->play();
         songTwoToggle = true;
+
         ui->toolButton_2->setIcon(QIcon(pauseButton));
+        ui->toolButton_2->setIcon(QIcon(":/images/pause.png"));
 
     }
     else {
         player2->stop();
         songTwoToggle = false;
         ui->toolButton_2->setIcon(QIcon(playButton));
+        ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
     }
 
 }
@@ -349,6 +360,7 @@ void MainWindow::downloadPlayDoneOg(QNetworkReply* result) {
 void MainWindow::downloadPauseDoneOg(QNetworkReply* result) {
 
     pauseButton.loadFromData(result->readAll());
+
 }
 
 

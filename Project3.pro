@@ -33,5 +33,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     NetworkTools.js \
+    Resources.qrc \
     dummy.qml \
     qml.qrc
