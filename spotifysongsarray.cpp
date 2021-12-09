@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QProgressDialog>
 #include <QApplication>
+#include <QJsonObject>
+#include <QJsonArray>
 
 
 // Loads the .csv into this array object
@@ -87,10 +89,32 @@ SpotifySongsArray::SpotifySongsArray(QString filepath, QProgressDialog* dialog)
     file.close();
 }
 
-//SpotifySong SpotifySongsArray::at(unsigned int i)
-//{
-//    return songs.at(i);
-//}
+SpotifySong::SpotifySong(QJsonObject obj)
+{
+    id = obj.find("id")->toString();
+    name = obj.find("name")->toString();
+    album = obj.find("album")->toObject().find("name")->toString();
+    albumId = obj.find("album")->toObject().find("id")->toString();
+    artists = obj.find("artists")->toArray().at(0).toObject().find("name")->toString();
+    artistsId = obj.find("artists")->toArray().at(0).toObject().find("id")->toString();
+
+    nameby = name + " by " + artists;
+
+    trackNumber = obj.find("track_number")->toString();
+    discNumber = obj.find("disc_number")->toString();
+    explicitness = obj.find("explicit")->toBool();
+    danceability = obj.find("danceability")->toDouble();
+    energy = obj.find("energy")->toDouble();
+    speechiness = obj.find("speechiness")->toDouble();
+    accousticness = obj.find("acousticness")->toDouble();
+    instrumentalness = obj.find("instrumentalness")->toDouble();
+    liveness = obj.find("liveness")->toDouble();
+    valence = obj.find("valence")->toDouble();
+    durationMs = obj.find("duration_ms")->toInt();
+    releaseDate = obj.find("album")->toObject().find("release_date")->toString();
+    previewUrl = obj.find("preview_url")->toString();
+    albumArtUrl = obj.find("album")->toObject().find("images")->toArray().at(0).toString();
+}
 
 //Functions for Adj List
 

@@ -26,7 +26,6 @@ struct SpotifySong
     bool explicitness;
     double danceability;
     double energy;
-    int key;
     double loudness;
     bool mode;
     double speechiness;
@@ -35,10 +34,15 @@ struct SpotifySong
     double liveness;
     double valence;
     float tempo;
-    unsigned int durationMs;
-    float timeSignature;
-    unsigned int year;
+    int durationMs;
     QString releaseDate;
+    QString previewUrl;
+    QString albumArtUrl;
+    QString nameby;
+
+
+    SpotifySong(QJsonObject obj);
+
 
     //Adjacent Songs vector
     std::vector<SpotifySong*> adjNodes;
