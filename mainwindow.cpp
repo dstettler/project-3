@@ -29,13 +29,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolButton->setIcon(QIcon(":/images/play.png"));
     ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
 
-    QMovie *movie = new QMovie(":/images/logo.gif");
+    QMovie* frontLogo = new QMovie(":/images/logo.gif");
 
-    ui->label_3->setMovie(movie);
-    movie->start();
+    ui->label_3->setMovie(frontLogo);
+    frontLogo->start();
 
     ui->loadMore->hide();
-
+    ui->actionResults->setEnabled(false);
     songId = nullptr;
     songs = nullptr;
     songOneToggle = false;
@@ -66,8 +66,21 @@ void MainWindow::printNetworkResults()
     //for  (int i = 0; i < 100; i++) {
       //  ui->listWidget->addItem(QString::number((i)));
     //}
+
+    //gets user input
     QString query = ui->lineEdit->text();
+    ui->listWidget->clear();
+    art.clear();
+    ui->label_2->clear();
+
+    if (ui->actionResults->isEnabled() == false) {
+        ui->actionResults->setEnabled(true);
+    }
+
+    //moves page to the "now loading" page
     ui->stackedWidget->setCurrentIndex(2);
+
+    //check if user didnt put anything in search box
     if (query == "") {
         QMessageBox msgBoxError;
         msgBoxError.setText("Please enter a song in the search box!");
@@ -78,6 +91,8 @@ void MainWindow::printNetworkResults()
         msgBoxError.exec();
     }
     else {
+
+        //displays pop up alerting that song recs will be found
         QMessageBox msgBox;
         msgBox.setText("Finding Recommendations...");
         msgBox.setInformativeText("Might take 30 seconds");
@@ -197,7 +212,6 @@ void MainWindow::itemClickedSlot (QListWidgetItem * itemClicked)
 void MainWindow::itemReleasedSlot ()
 {
 
-
     qDebug() << songToPlay[originalString].toString();
     ui->label_2->clear();
     if (songToPlay[originalString].toString() == "") {
@@ -237,18 +251,15 @@ void MainWindow::downloadImageDone2(QNetworkReply* result) {
     pictureToDisplay.loadFromData(result->readAll());
 
     ui->label_2->setPixmap(pictureToDisplay);
-
-
 }
 
 
 void MainWindow::on_actionHome_triggered()
 {
     ui->stackedWidget->setCurrentIndex(0);
-    loaded = false;
-    ui->listWidget->clear();
-    art.clear();
-    ui->label_2->clear();
+    //ui->listWidget->clear();
+    //art.clear();
+    //ui->label_2->clear();
     ui->loadMore->hide();
 }
 
@@ -359,7 +370,6 @@ void MainWindow::printNetworkResultsLoadMore() {
             ui->listWidget->addItem(songToAdd);
             QObject::disconnect(*conn);
 
-
         }
         lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();
         emit songListCompleted();
@@ -367,5 +377,11 @@ void MainWindow::printNetworkResultsLoadMore() {
     });
 
     net->recommendationsLoop(lastToken, this);
+}
+
+
+void MainWindow::on_actionResults_triggered()
+{
+    ui->stackedWidget->setCurrentIndex(1);
 }
 

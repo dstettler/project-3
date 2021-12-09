@@ -44,6 +44,8 @@ private slots:
 
     void on_actionHome_triggered();
 
+    void on_actionResults_triggered();
+
 private:
     Ui::MainWindow *ui;
     NetworkTools* net;

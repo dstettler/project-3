@@ -397,6 +397,7 @@ border-radius: 25%;</string>
      <string>File</string>
     </property>
     <addaction name="actionHome"/>
+    <addaction name="actionResults"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -404,6 +405,11 @@ border-radius: 25%;</string>
   <action name="actionHome">
    <property name="text">
     <string>Home</string>
+   </property>
+  </action>
+  <action name="actionResults">
+   <property name="text">
+    <string>Results</string>
    </property>
   </action>
  </widget>
