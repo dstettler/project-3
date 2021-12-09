@@ -39,6 +39,8 @@ public:
 
     void recommendationsLoop(QString songId, MainWindow* parent);
 
+    QString getTempo(QString songId);
+
     void getRequest(QString url, QVector<QString> headers);
     void postRequest(QString url, QVector<QString> headers, QString body);
 };

@@ -279,13 +279,46 @@ void NetworkTools::recommendationsLoop(QString songId, MainWindow *parent)
         QObject *object = component.create();
 
         QString list;
+        QVariant returned;
 
         // Do not run a synchronous network request on the UI thread, you say?
         // Nay I say, nay
         // This *will* freeze the process
-        QMetaObject::invokeMethod(object, "doRecLoop", Q_RETURN_ARG(QString, list), Q_ARG(QString, songId));
+        QMetaObject::invokeMethod(object, "doRecLoop", Q_RETURN_ARG(QVariant, returned), Q_ARG(QString, songId));
+
+        list = returned.toString();
+
         QJsonDocument doc = QJsonDocument::fromJson(list.toUtf8());
         QJsonArray arr = doc.array();
         emit (parent->recommendedCompleted(arr));
+    }
+}
+
+QString NetworkTools::getTempo(QString songId)
+{
+    QQmlEngine engine;
+
+    QQmlComponent component(&engine, QUrl("qrc:main/dummy.qml"), QQmlComponent::PreferSynchronous);
+
+    if (component.status() == QQmlComponent::Ready)
+    {
+        QObject *object = component.create();
+
+        QString tempo;
+        QVariant returned;
+        QVariant id = QVariant::fromValue(songId);
+
+        // Do not run a synchronous network request on the UI thread, you say?
+        // Nay I say, nay (again)
+        // This *will* freeze the process (much less time than the other one tho)
+        QMetaObject::invokeMethod(object, "getTempo", Q_RETURN_ARG(QVariant, returned), Q_ARG(QVariant, id));
+
+        tempo = returned.toString();
+
+        return tempo;
+    }
+    else
+    {
+        return "";
     }
 }

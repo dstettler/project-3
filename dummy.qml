@@ -6,14 +6,15 @@ Item
 {
     id: dummyItem
 
-    function doRecLoop (track) : string
+    function doRecLoop (track)
     {
         var ret = NetworkFunctions.recommendationLoop(track);
         return ret;
     }
 
-    function getTempo(track) : string
+    function getTempo(track)
     {
-        return NetworkFunctions.getTempo(track);
+        let tempo = NetworkFunctions.getTempo(track);
+        return tempo;
     }
 }

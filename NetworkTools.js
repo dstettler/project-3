@@ -81,7 +81,7 @@ function lerp(begin, end, index)
 function getTempo(track)
 {
     let token = getToken();
-    let features = getAudioFeatures(token, track);
+    let features = JSON.parse(getAudioFeatures(token, track));
     return features.tempo.toString();
 }
 
