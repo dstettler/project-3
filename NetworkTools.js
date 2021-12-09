@@ -32,7 +32,9 @@ function recommendationLoop(track)
 
         if (k % 100 == 0)
         {
-            featuresRes.push(JSON.parse(getAudioFeatures(token, beegArray[k].id)));
+            let res = JSON.parse(getAudioFeatures(token, beegArray[k].id));
+            console.log(res);
+            featuresRes.push(res);
         }
     }
 
@@ -47,7 +49,8 @@ function recommendationLoop(track)
             // beginning + ((i / 99) * (end - beginning))
             //
             // This is very messy I know I am sorry
-            accousticness: lerp(featuresRes[0+currentHundred].accousticness, featuresRes[1+currentHundred].accousticness, m%100),
+            //it ok
+            acousticness: lerp(featuresRes[0+currentHundred].acousticness, featuresRes[1+currentHundred].acousticness, m%100),
             danceability: lerp(featuresRes[0+currentHundred].danceability, featuresRes[1+currentHundred].danceability, m%100),
             energy: lerp(featuresRes[0+currentHundred].energy, featuresRes[1+currentHundred].energy, m%100),
             instrumentalness: lerp(featuresRes[0+currentHundred].instrumentalness, featuresRes[1+currentHundred].instrumentalness, m%100),

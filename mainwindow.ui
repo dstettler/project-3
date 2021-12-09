@@ -287,6 +287,24 @@ border-radius: 25%;</string>
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="page">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+         <widget class="QLabel" name="label_4">
+          <property name="font">
+           <font>
+            <pointsize>30</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Now Loading...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item alignment="Qt::AlignHCenter">
@@ -311,6 +329,7 @@ border-radius: 25%;</string>
       </property>
       <property name="font">
        <font>
+        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -370,7 +389,7 @@ border-radius: 25%;</string>
      <x>0</x>
      <y>0</y>
      <width>1920</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

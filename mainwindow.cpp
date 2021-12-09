@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->toolButton_2, SIGNAL(clicked()), this, SLOT(playSongTwo()));
     connect(ui->loadMore, SIGNAL(clicked()), this, SLOT(printNetworkResultsLoadMore()));
 
-
+    setWindowIcon(QIcon(":/images/soundwave.png"));
     ui->toolButton->setIcon(QIcon(":/images/play.png"));
     ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
 
@@ -69,6 +69,7 @@ void MainWindow::printNetworkResults()
         QFont fontT("Times", 10);
         msgBoxError.setFont(fontT);
         msgBoxError.setWindowTitle("Error");
+        msgBoxError.setWindowIcon(QIcon(":/images/error.png"));
         msgBoxError.exec();
     }
     else {
@@ -78,6 +79,7 @@ void MainWindow::printNetworkResults()
         QFont fontT("Times", 10);
         msgBox.setFont(fontT);
         msgBox.setWindowTitle("Loading...");
+        msgBox.setWindowIcon(QIcon(":/images/loading.png"));
         msgBox.exec();
 
 

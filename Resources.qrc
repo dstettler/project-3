@@ -3,5 +3,7 @@
         <file>pause.png</file>
         <file>play.png</file>
         <file>wavelogo.png</file>
+        <file>error.png</file>
+        <file>soundwave.png</file>
     </qresource>
 </RCC>
