@@ -6,7 +6,7 @@ function recommendationLoop(track)
     for (let i = 0; i < 10; i++)
     {
         // I have no idea when the tokens expire so this is to avoid token timeouts
-        if (i % 3 == 0)
+        if (i % 10 == 0)
             token = getToken();
 
         let rec = JSON.parse(getRecommendation(token, track));
@@ -23,16 +23,18 @@ function recommendationLoop(track)
 
     var featuresRes = [];
 
-    for (let k = 0; k < beegArray.length; k += 100)
+    for (let k = 0; k < beegArray.length; k++)
     {
-        if (k % 300 == 0)
+        if (k % 1000 == 0)
         {
             token = getToken();
         }
 
-        if (k % 100 == 0)
+        if (k % 100 == 1 || k == 0)
         {
-            featuresRes.push(JSON.parse(getAudioFeatures(token, beegArray[k].id)));
+            let res = getAudioFeatures(token, beegArray[k].id);
+            let resJson = JSON.parse(res)
+            featuresRes.push(resJson);
         }
     }
 
@@ -40,14 +42,16 @@ function recommendationLoop(track)
     for (let m = 0; m < beegArray.length; m++)
     {
         if (m % 100 == 0 && currentHundred + 1 < featuresRes.length)
+        {
             currentHundred++;
+        }
 
         let obj = {
             // Lerp the values in the following format:
             // beginning + ((i / 99) * (end - beginning))
             //
             // This is very messy I know I am sorry
-            accousticness: lerp(featuresRes[0+currentHundred].accousticness, featuresRes[1+currentHundred].accousticness, m%100),
+            acousticness: lerp(featuresRes[0+currentHundred].acousticness, featuresRes[1+currentHundred].acousticness, m%100),
             danceability: lerp(featuresRes[0+currentHundred].danceability, featuresRes[1+currentHundred].danceability, m%100),
             energy: lerp(featuresRes[0+currentHundred].energy, featuresRes[1+currentHundred].energy, m%100),
             instrumentalness: lerp(featuresRes[0+currentHundred].instrumentalness, featuresRes[1+currentHundred].instrumentalness, m%100),
@@ -56,9 +60,9 @@ function recommendationLoop(track)
             valence: lerp(featuresRes[0+currentHundred].valence, featuresRes[1+currentHundred].valence, m%100),
         };
 
+        // Append these values to the already created node
         beegArray[m] = Object.assign(beegArray[m], obj);
     }
-
 
     // Necessary to carry the values over to C++
     // VERY LARGE STRING
@@ -69,12 +73,14 @@ function recommendationLoop(track)
 
 function lerp(begin, end, index)
 {
+    // Magic linear interpolation function to make my life easier
     return begin + (((index % 100) / 99) * (end - begin));
 }
 
 
 function getAudioFeatures(token, track)
 {
+    console.log("Getting features for track: " + track)
     var http = new XMLHttpRequest();
     var url = `https://api.spotify.com/v1/audio-features/${track}`;
     http.open("GET", url, false);
@@ -86,11 +92,12 @@ function getAudioFeatures(token, track)
 
     if (http.status === 200)
     {
+        console.log("Response: " + http.responseText);
         return http.responseText;
     }
     else
     {
-        return "msg: error";
+        return "{ msg: error }";
     }
 }
 
