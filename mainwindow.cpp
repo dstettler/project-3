@@ -61,83 +61,94 @@ void MainWindow::printNetworkResults()
     //for  (int i = 0; i < 100; i++) {
       //  ui->listWidget->addItem(QString::number((i)));
     //}
-
-    QMessageBox msgBox;
-    msgBox.setText("Finding Recommendations...");
-    msgBox.setInformativeText("Might take 30 seconds");
-    QFont fontT("Times", 10);
-    msgBox.setFont(fontT);
-    msgBox.setWindowTitle("Loading...");
-    msgBox.exec();
-
-
     QString query = ui->lineEdit->text();
 
-    art.clear();
-    songToPlay.clear();
-    originalString.clear();
-    ui->loadMore->show();
+    if (query == "") {
+        QMessageBox msgBoxError;
+        msgBoxError.setText("Please enter a song in the search box!");
+        QFont fontT("Times", 10);
+        msgBoxError.setFont(fontT);
+        msgBoxError.setWindowTitle("Error");
+        msgBoxError.exec();
+    }
+    else {
+        QMessageBox msgBox;
+        msgBox.setText("Finding Recommendations...");
+        msgBox.setInformativeText("Might take 30 seconds");
+        QFont fontT("Times", 10);
+        msgBox.setFont(fontT);
+        msgBox.setWindowTitle("Loading...");
+        msgBox.exec();
 
 
-    auto tokenConn = std::make_shared<QMetaObject::Connection>();
 
-       *tokenConn = connect(this, &MainWindow::tokenRequestCompleted, [=] (QString token) {
-        auto searchConn = std::make_shared<QMetaObject::Connection>();
-           *searchConn = connect(this, &MainWindow::searchResultCompleted, [=] (QJsonObject obj) {
-               QJsonObject tracks = obj.find("tracks")->toObject();
-               QJsonArray items = tracks.find("items")->toArray();
-               QJsonObject song = items[0].toObject();
-               original = song;
-               this->songId = song.find("id")->toString();
-
-               auto conn = std::make_shared<QMetaObject::Connection>();
-               *conn = connect(this, &MainWindow::recommendedCompleted, [=] (QJsonArray obj) {
-                   for (int i = 0; i < obj.size(); i++) {
-
-                       QJsonObject songInfo = obj.at(i).toObject();
-                       QVariantMap songInfoMap = songInfo.toVariantMap();
-                       QVariantMap albumInfoMap = songInfoMap["album"].toJsonObject().toVariantMap();
-                       QVariantList temp = albumInfoMap["images"].toList();
-                       QVariantMap temp2 = temp[0].toMap();
-
-                       QString artString = temp2["url"].toString();
-                       QVariantMap originalMap = original.toVariantMap();
-                       QVariantMap ogMapArtist = originalMap["artists"].toJsonArray().toVariantList().at(0).toJsonObject().toVariantMap();
-
-                       originalString = originalMap["name"].toString() + " by " + ogMapArtist["name"].toString();
-
-                       art[originalString] = originalMap["album"].toJsonObject().toVariantMap()["images"].toList()[0].toMap()["url"].toString();
+        art.clear();
+        songToPlay.clear();
+        originalString.clear();
+        ui->loadMore->show();
 
 
-                       QVariantMap songArtistMap = songInfoMap["artists"].toJsonArray().at(0).toObject().toVariantMap();
+        auto tokenConn = std::make_shared<QMetaObject::Connection>();
+
+           *tokenConn = connect(this, &MainWindow::tokenRequestCompleted, [=] (QString token) {
+            auto searchConn = std::make_shared<QMetaObject::Connection>();
+               *searchConn = connect(this, &MainWindow::searchResultCompleted, [=] (QJsonObject obj) {
+                   QJsonObject tracks = obj.find("tracks")->toObject();
+                   QJsonArray items = tracks.find("items")->toArray();
+                   QJsonObject song = items[0].toObject();
+                   original = song;
+                   this->songId = song.find("id")->toString();
+
+                   auto conn = std::make_shared<QMetaObject::Connection>();
+                   *conn = connect(this, &MainWindow::recommendedCompleted, [=] (QJsonArray obj) {
+                       for (int i = 0; i < obj.size(); i++) {
+
+                           QJsonObject songInfo = obj.at(i).toObject();
+                           QVariantMap songInfoMap = songInfo.toVariantMap();
+                           QVariantMap albumInfoMap = songInfoMap["album"].toJsonObject().toVariantMap();
+                           QVariantList temp = albumInfoMap["images"].toList();
+                           QVariantMap temp2 = temp[0].toMap();
+
+                           QString artString = temp2["url"].toString();
+                           QVariantMap originalMap = original.toVariantMap();
+                           QVariantMap ogMapArtist = originalMap["artists"].toJsonArray().toVariantList().at(0).toJsonObject().toVariantMap();
+
+                           originalString = originalMap["name"].toString() + " by " + ogMapArtist["name"].toString();
+
+                           art[originalString] = originalMap["album"].toJsonObject().toVariantMap()["images"].toList()[0].toMap()["url"].toString();
 
 
-                       QString songToAdd = songInfoMap["name"].toString();
-                       songToAdd += " by " + songArtistMap["name"].toString();
-                       //add url for album art into a map, key being song name + artist
-                       art[songToAdd] = artString;
+                           QVariantMap songArtistMap = songInfoMap["artists"].toJsonArray().at(0).toObject().toVariantMap();
 
-                       //add searched song audio url into map, key being song name + artist
-                       songToPlay[originalString] = originalMap["preview_url"].toString();
-                       //add current song in loop audio url into map, key being song name + artist
-                       songToPlay[songToAdd] = songInfoMap["preview_url"].toString();
-                       ui->listWidget->addItem(songToAdd);
 
-                   }
-                   lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();
-                   emit songListCompleted();
+                           QString songToAdd = songInfoMap["name"].toString();
+                           songToAdd += " by " + songArtistMap["name"].toString();
+                           //add url for album art into a map, key being song name + artist
+                           art[songToAdd] = artString;
 
-                   QObject::disconnect(*conn);
-               });
+                           //add searched song audio url into map, key being song name + artist
+                           songToPlay[originalString] = originalMap["preview_url"].toString();
+                           //add current song in loop audio url into map, key being song name + artist
+                           songToPlay[songToAdd] = songInfoMap["preview_url"].toString();
+                           ui->listWidget->addItem(songToAdd);
 
-               net->recommendationsLoop(songId, this);
-               QObject::disconnect(*searchConn);
+                       }
+                       lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();
+                       emit songListCompleted();
+
+                       QObject::disconnect(*conn);
+                   });
+
+                   net->recommendationsLoop(songId, this);
+                   QObject::disconnect(*searchConn);
+                });
+                net->searchSong(token, query, this);
+                QObject::disconnect(*tokenConn);
             });
-            net->searchSong(token, query, this);
-            QObject::disconnect(*tokenConn);
-        });
 
-        net->getToken(this);
+            net->getToken(this);
+    }
+
 
 }
 
