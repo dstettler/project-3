@@ -129,10 +129,12 @@ void MainWindow::printNetworkResults()
 
 
                        for (int i = 1; i < obj.size(); i++) {
-                           SpotifySong temp;
 
-                           songArray->graphSSA.
-                           QJsonObject songInfo = obj.at(i).toObject();
+                           SpotifySong songToAdd(obj[i].toObject());
+
+                            songArray->graphSSA.insert(songToAdd);
+
+                           /*QJsonObject songInfo = obj.at(i).toObject();
                            QVariantMap songInfoMap = songInfo.toVariantMap();
                            QVariantMap albumInfoMap = songInfoMap["album"].toJsonObject().toVariantMap();
                            QVariantList temp = albumInfoMap["images"].toList();
@@ -161,6 +163,7 @@ void MainWindow::printNetworkResults()
                            //add current song in loop audio url into map, key being song name + artist
                            songToPlay[songToAdd] = songInfoMap["preview_url"].toString();
                            ui->listWidget->addItem(songToAdd);
+                           */
 
                        }
                        lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();

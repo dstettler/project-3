@@ -31,7 +31,7 @@ color: rgb(255,255,255);</string>
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_15">
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -138,6 +138,69 @@ border-radius: 25%;</string>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="3">
+             <layout class="QGridLayout" name="gridLayout_4">
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Album</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Name</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Artist</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Tempo</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="4" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+             <widget class="QToolButton" name="toolButton_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>200</height>
+               </size>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>150</width>
+                <height>150</height>
+               </size>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
             <item row="2" column="2" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
              <widget class="QToolButton" name="toolButton">
               <property name="sizePolicy">
@@ -178,34 +241,6 @@ border-radius: 25%;</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="3" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-             <widget class="QLabel" name="label_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>32</horstretch>
-                <verstretch>32</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>200</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>200</width>
-                <height>200</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="2">
              <widget class="QLabel" name="label">
               <property name="sizePolicy">
@@ -234,33 +269,30 @@ border-radius: 25%;</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="3" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-             <widget class="QToolButton" name="toolButton_2">
+            <item row="0" column="4" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+             <widget class="QLabel" name="label_2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
+                <horstretch>32</horstretch>
+                <verstretch>32</verstretch>
                </sizepolicy>
               </property>
-              <property name="maximumSize">
+              <property name="minimumSize">
                <size>
-                <width>350</width>
+                <width>200</width>
                 <height>200</height>
                </size>
               </property>
-              <property name="autoFillBackground">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="iconSize">
+              <property name="maximumSize">
                <size>
-                <width>150</width>
-                <height>150</height>
+                <width>200</width>
+                <height>200</height>
                </size>
               </property>
-              <property name="autoRaise">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="scaledContents">
                <bool>true</bool>
               </property>
              </widget>
@@ -275,7 +307,52 @@ border-radius: 25%;</string>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>500</width>
+                <width>650</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="5">
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Artist</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Name </string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Album</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Tempo</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="6">
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>800</width>
                 <height>20</height>
                </size>
               </property>
