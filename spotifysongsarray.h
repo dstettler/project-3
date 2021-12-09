@@ -33,7 +33,7 @@ struct SpotifySong
     double instrumentalness;
     double liveness;
     double valence;
-    float tempo;
+    QString tempo;
     int durationMs;
     QString releaseDate;
     QString previewUrl;
@@ -65,6 +65,7 @@ class AdjList {
 
 public:
     void insert(SpotifySong newSong);
+    void insert(SpotifySong* newSong);
 
     AdjList();
     AdjList(SpotifySong* src);

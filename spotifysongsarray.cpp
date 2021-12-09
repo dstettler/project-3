@@ -118,6 +118,10 @@ SpotifySong::SpotifySong()
 
 //Functions for Adj List
 
+void AdjList::insert(SpotifySong* newSong) {
+    nodeList.push_back(newSong);
+}
+
 void AdjList::insert(SpotifySong newSong) {
     SpotifySong* insertSong = &newSong;
     nodeList.push_back(insertSong);
@@ -182,4 +186,5 @@ SpotifySongsArray::SpotifySongsArray(QJsonObject sourceSong) {
     SpotifySong* s = new SpotifySong(sourceSong);
     AdjList temp(s);
     graphSSA = temp;
+    graphSSA.insert(s);
 }
