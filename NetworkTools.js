@@ -32,7 +32,7 @@ function recommendationLoop(track)
 
         if (k % 100 == 0)
         {
-            featuresRes.push(getAudioFeatures(token, beegArray[k].id));
+            featuresRes.push(JSON.parse(getAudioFeatures(token, beegArray[k].id)));
         }
     }
 
@@ -87,6 +87,10 @@ function getAudioFeatures(token, track)
     if (http.status === 200)
     {
         return http.responseText;
+    }
+    else
+    {
+        return "error";
     }
 }
 
