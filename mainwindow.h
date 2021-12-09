@@ -38,6 +38,7 @@ private slots:
     void playSongTwo();
     void downloadPlayDoneOg(QNetworkReply* result);
     void downloadPauseDoneOg(QNetworkReply* result);
+    void printNetworkResultsLoadMore();
 
 
 

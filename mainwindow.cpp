@@ -20,36 +20,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(printNetworkResults()));
     connect(this, SIGNAL(songListCompleted()), this, SLOT(itemReleasedSlot()));
-    connect(this, SIGNAL(songListCompleted()), this, SLOT(icons()));
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(itemClickedSlot(QListWidgetItem*)));
     connect(ui->toolButton, SIGNAL(clicked()), this, SLOT(playSongOne()));
     connect(ui->toolButton_2, SIGNAL(clicked()), this, SLOT(playSongTwo()));
-    connect(ui->loadMore, SIGNAL(clicked()), this, SLOT(printNetworkResults()));
+    connect(ui->loadMore, SIGNAL(clicked()), this, SLOT(printNetworkResultsLoadMore()));
 
-    /*QNetworkAccessManager *manager2 = new QNetworkAccessManager(this);
-    connect(manager2, &QNetworkAccessManager::finished, this, &MainWindow::downloadPlayDoneOg);
-
-    //QUrl play = QUrl("https://cdn2.iconfinder.com/data/icons/media-player-ui/512/Media-Icon-13-512.png");
-    QUrl play = QUrl("https://jccdallas.org/wp-content/uploads/2020/06/Spotify-Play-Button.png");
-    QNetworkRequest playRequestOg(play);
-    manager2->get(playRequestOg);
-
-
-
-    QNetworkAccessManager *manager3 = new QNetworkAccessManager(this);
-    connect(manager3, &QNetworkAccessManager::finished, this, &MainWindow::downloadPauseDoneOg);
-
-    //QUrl pause = QUrl("https://cdn4.iconfinder.com/data/icons/media-buttons-1/200/757-512.png");
-    QUrl pause = QUrl("https://cdn-icons.flaticon.com/png/128/1710/premium/1710005.png?token=exp=1638997083~hmac=94c271f495e6bfe0de4094180114c3e0");
-    QNetworkRequest pauseRequest(pause);
-    manager3->get(pauseRequest);*/
-
-    //playButton.loadFromData(");
 
     ui->toolButton->setIcon(QIcon(":/images/play.png"));
     ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
 
-
+    ui->loadMore->hide();
 
     songId = nullptr;
     songs = nullptr;
@@ -67,10 +47,6 @@ MainWindow::~MainWindow()
     delete ui;
     delete net;
     delete songs;
-    /*for (auto i = managerBoss.begin(); i != managerBoss.end(); i++) {
-        delete i.value();
-    }
-    */
 }
 
 void MainWindow::printNetworkResults()
@@ -97,66 +73,25 @@ void MainWindow::printNetworkResults()
 
     QString query = ui->lineEdit->text();
 
+    art.clear();
+    songToPlay.clear();
+    originalString.clear();
+    ui->loadMore->show();
 
 
-    if (loaded) {
+    auto tokenConn = std::make_shared<QMetaObject::Connection>();
 
-
-
-
-        connect(this, &MainWindow::recommendedCompleted, [=] (QJsonArray obj) {
-
-            for (int i = 0; i < obj.size(); i++) {
-
-                QJsonObject songInfo = obj.at(i).toObject();
-                QVariantMap songInfoMap = songInfo.toVariantMap();
-                QVariantMap albumInfoMap = songInfoMap["album"].toJsonObject().toVariantMap();
-                QVariantList temp = albumInfoMap["images"].toList();
-                QVariantMap temp2 = temp[0].toMap();
-
-                QString artString = temp2["url"].toString();
-                QVariantMap originalMap = original.toVariantMap();
-                QVariantMap ogMapArtist = originalMap["artists"].toJsonArray().toVariantList().at(0).toJsonObject().toVariantMap();
-
-                originalString = originalMap["name"].toString() + " by " + ogMapArtist["name"].toString();
-
-                art[originalString] = originalMap["album"].toJsonObject().toVariantMap()["images"].toList()[0].toMap()["url"].toString();
-
-
-                QVariantMap songArtistMap = songInfoMap["artists"].toJsonArray().at(0).toObject().toVariantMap();
-
-
-
-                QString songToAdd = songInfoMap["name"].toString();
-                songToAdd += " by " + songArtistMap["name"].toString();
-                art[songToAdd] = artString;
-
-                songToPlay[originalString] = originalMap["preview_url"].toString();
-
-                songToPlay[songToAdd] = songInfoMap["preview_url"].toString();
-
-                ui->listWidget->addItem(songToAdd);
-                //managerBoss[songToAdd] = new QNetworkAccessManager(this);
-
-            }
-            lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();
-            emit songListCompleted();
-        });
-
-        net->recommendationsLoop(lastToken, this);
-
-    }
-    else {
-        connect(this, &MainWindow::tokenRequestCompleted, [=] (QString token) {
-            connect(this, &MainWindow::searchResultCompleted, [=] (QJsonObject obj) {
+       *tokenConn = connect(this, &MainWindow::tokenRequestCompleted, [=] (QString token) {
+        auto searchConn = std::make_shared<QMetaObject::Connection>();
+           *searchConn = connect(this, &MainWindow::searchResultCompleted, [=] (QJsonObject obj) {
                QJsonObject tracks = obj.find("tracks")->toObject();
                QJsonArray items = tracks.find("items")->toArray();
                QJsonObject song = items[0].toObject();
                original = song;
                this->songId = song.find("id")->toString();
 
-
-               connect(this, &MainWindow::recommendedCompleted, [=] (QJsonArray obj) {
+               auto conn = std::make_shared<QMetaObject::Connection>();
+               *conn = connect(this, &MainWindow::recommendedCompleted, [=] (QJsonArray obj) {
                    for (int i = 0; i < obj.size(); i++) {
 
                        QJsonObject songInfo = obj.at(i).toObject();
@@ -177,7 +112,6 @@ void MainWindow::printNetworkResults()
                        QVariantMap songArtistMap = songInfoMap["artists"].toJsonArray().at(0).toObject().toVariantMap();
 
 
-
                        QString songToAdd = songInfoMap["name"].toString();
                        songToAdd += " by " + songArtistMap["name"].toString();
                        //add url for album art into a map, key being song name + artist
@@ -191,21 +125,19 @@ void MainWindow::printNetworkResults()
 
                    }
                    lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();
-                   loaded = true;
-                   qDebug() << songToPlay.size();
                    emit songListCompleted();
 
+                   QObject::disconnect(*conn);
                });
 
                net->recommendationsLoop(songId, this);
-
+               QObject::disconnect(*searchConn);
             });
             net->searchSong(token, query, this);
+            QObject::disconnect(*tokenConn);
         });
 
         net->getToken(this);
-    }
-
 
 }
 
@@ -217,7 +149,9 @@ void MainWindow::itemClickedSlot (QListWidgetItem * itemClicked)
     player2->stop();
     ui->toolButton_2->setEnabled(true);
     ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
-    qDebug() << songToPlay[songClicked].toString();
+
+    //qDebug() << songToPlay[songClicked].toString();
+
     if (songToPlay[songClicked].toString() == "") {
         ui->toolButton_2->setEnabled(false);
         ui->toolButton_2->setText("Song Preview Not Available");
@@ -231,7 +165,7 @@ void MainWindow::itemClickedSlot (QListWidgetItem * itemClicked)
 
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 
-    connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::downloadImageDone);
+    connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::downloadImageDone2);
 
     QUrl image = QUrl(art[itemClicked->text()].toString());
 
@@ -247,7 +181,7 @@ void MainWindow::itemReleasedSlot ()
 
 
     qDebug() << songToPlay[originalString].toString();
-
+    ui->label_2->clear();
     if (songToPlay[originalString].toString() == "") {
         ui->toolButton->setEnabled(false);
         ui->toolButton->setText("Song Preview Not Available");
@@ -255,11 +189,13 @@ void MainWindow::itemReleasedSlot ()
     }
     else {
         ui->toolButton->setEnabled(true);
+        ui->toolButton->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonIconOnly);
         ui->toolButton_2->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonIconOnly);
     }
 
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::downloadImageDone2);
+    connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::downloadImageDone);
+
     ui->stackedWidget->setCurrentIndex(1);
     ui->toolButton_2->setEnabled(false);
     ui->toolButton_2->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
@@ -268,9 +204,6 @@ void MainWindow::itemReleasedSlot ()
     QUrl image2 = QUrl(art[originalString].toString());
     QNetworkRequest request2(image2);
     manager->get(request2);
-
-
-
 }
 
 
@@ -278,14 +211,15 @@ void MainWindow::downloadImageDone(QNetworkReply* result) {
     QPixmap pictureToDisplay;
     pictureToDisplay.loadFromData(result->readAll());
 
-    ui->label_2->setPixmap(pictureToDisplay);
+    ui->label->setPixmap(pictureToDisplay);
 }
 
 void MainWindow::downloadImageDone2(QNetworkReply* result) {
     QPixmap pictureToDisplay;
     pictureToDisplay.loadFromData(result->readAll());
 
-    ui->label->setPixmap(pictureToDisplay);
+    ui->label_2->setPixmap(pictureToDisplay);
+
 
 }
 
@@ -296,6 +230,8 @@ void MainWindow::on_actionHome_triggered()
     loaded = false;
     ui->listWidget->clear();
     art.clear();
+    ui->label_2->clear();
+    ui->loadMore->hide();
 }
 
 void MainWindow::playSongOne() {
@@ -365,40 +301,53 @@ void MainWindow::downloadPauseDoneOg(QNetworkReply* result) {
 
 
 
-/*void MainWindow::icons() {
-    int j = 0;
+void MainWindow::printNetworkResultsLoadMore() {
 
-    for (auto i = managerBoss.begin(); i != managerBoss.end(); i++) {
-        if (j == 10) {
-            break;
+    QMessageBox msgBox;
+    msgBox.setText("Finding Recommendations...");
+    msgBox.setInformativeText("Might take 30 seconds");
+    QFont fontT("Times", 10);
+    msgBox.setFont(fontT);
+    msgBox.setWindowTitle("Loading...");
+    msgBox.exec();
+
+    auto conn = std::make_shared<QMetaObject::Connection>();
+
+    connect(this, &MainWindow::recommendedCompleted, [=] (QJsonArray obj) {
+
+        for (int i = 0; i < obj.size(); i++) {
+
+            QJsonObject songInfo = obj.at(i).toObject();
+            QVariantMap songInfoMap = songInfo.toVariantMap();
+            QVariantMap albumInfoMap = songInfoMap["album"].toJsonObject().toVariantMap();
+            QVariantList temp = albumInfoMap["images"].toList();
+            QVariantMap temp2 = temp[0].toMap();
+
+            QString artString = temp2["url"].toString();
+
+
+
+            QVariantMap songArtistMap = songInfoMap["artists"].toJsonArray().at(0).toObject().toVariantMap();
+
+
+
+            QString songToAdd = songInfoMap["name"].toString();
+            songToAdd += " by " + songArtistMap["name"].toString();
+            art[songToAdd] = artString;
+
+
+            songToPlay[songToAdd] = songInfoMap["preview_url"].toString();
+
+            ui->listWidget->addItem(songToAdd);
+            QObject::disconnect(*conn);
+
+
         }
-        j++;
-        connect(i.value(), &QNetworkAccessManager::finished, this, &MainWindow::emitOneParam);
-        temp.push_front(i.key());
+        lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();
+        emit songListCompleted();
+        QObject::disconnect(*conn);
+    });
 
-        QUrl image = QUrl(art[i.key()].toString());
-        QNetworkRequest request(image);
-        i.value()->get(request);
-
-    }
-
-
+    net->recommendationsLoop(lastToken, this);
 }
 
-
-void MainWindow::downloadImageDoneIcon(QNetworkReply* result, QString test) {
-    QPixmap pictureToDisplay;
-    pictureToDisplay.loadFromData(result->readAll());
-    QListWidgetItem* item = new QListWidgetItem(QIcon(pictureToDisplay), test);
-
-    ui->listWidget->addItem(item);
-
-}
-
-void MainWindow::emitOneParam(QNetworkReply* result) {
-    QString temp2 = temp.front();
-    temp.pop_front();
-    emit emittingCompleted(result, temp2);
-
-}
-*/
