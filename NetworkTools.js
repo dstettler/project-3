@@ -32,45 +32,28 @@ function recommendationLoop(track)
 
         if (k % 100 == 0)
         {
-            res.push(getAudioFeatures(token, beegArray[k].id));
+            featuresRes.push(getAudioFeatures(token, beegArray[k].id));
         }
     }
 
-
-    var slopes = [];
-    for (let l = 0; l < featuresRes.length - 1; l++)
-    {
-        // accousticness / dX
-        slopes.push(
-                    {
-                        accousticness: (featuresRes[l + 1].acousticness - featuresRes[l].acousticness) / 100,
-                        danceability: (featuresRes[l + 1].danceability - featuresRes[l].danceability) / 100,
-                        energy: (featuresRes[l + 1].energy - featuresRes[l].energy) / 100,
-                        instrumentalness: (featuresRes[l + 1].instrumentalness - featuresRes[l].instrumentalness) / 100,
-                        liveness: (featuresRes[l + 1].liveness - featuresRes[l].liveness) / 100,
-                        speechiness: (featuresRes[l + 1].speechiness - featuresRes[l].speechiness) / 100,
-                        valence: (featuresRes[l + 1].valence - featuresRes[l].valence) / 100,
-                    });
-    }
-
-    var currentHundred = -100;
+    var currentHundred = -1;
     for (let m = 0; m < beegArray.length; m++)
     {
         if (m % 100 == 0)
-            currentSlope += 100;
+            currentHundred++;
 
         let obj = {
             // Lerp the values in the following format:
             // beginning + ((i / 99) * (end - beginning))
             //
             // This is very messy I know I am sorry
-            accousticness: beegArray[0 + currentHundred].accousticness + (((m % 100) / 99) * (beegArray[99 + currentHundred].accousticness - beegArray[0 + currentHundred].accousticness)),
-            danceability: beegArray[0 + currentHundred].danceability + (((m % 100) / 99) * (beegArray[99 + currentHundred].danceability - beegArray[0 + currentHundred].danceability)),
-            energy: beegArray[0 + currentHundred].energy + (((m % 100) / 99) * (beegArray[99 + currentHundred].energy - beegArray[0 + currentHundred].energy)),
-            instrumentalness: beegArray[0 + currentHundred].instrumentalness + (((m % 100) / 99) * (beegArray[99 + currentHundred].instrumentalness - beegArray[0 + currentHundred].instrumentalness)),
-            liveness: beegArray[0 + currentHundred].liveness + (((m % 100) / 99) * (beegArray[99 + currentHundred].liveness - beegArray[0 + currentHundred].liveness)),
-            speechiness: beegArray[0 + currentHundred].speechiness + (((m % 100) / 99) * (beegArray[99 + currentHundred].speechiness - beegArray[0 + currentHundred].speechiness)),
-            valence: beegArray[0 + currentHundred].valence + (((m % 100) / 99) * (beegArray[99 + currentHundred].valence - beegArray[0 + currentHundred].valence)),
+            accousticness: lerp(beegArray[0+currentHundred].accousticness, beegArray[99+currentHundred].accousticness, m%100),
+            danceability: lerp(beegArray[0+currentHundred].danceability, beegArray[99+currentHundred].danceability, m%100),
+            energy: lerp(beegArray[0+currentHundred].energy, beegArray[99+currentHundred].energy, m%100),
+            instrumentalness: lerp(beegArray[0+currentHundred].instrumentalness, beegArray[99+currentHundred].instrumentalness, m%100),
+            liveness: lerp(beegArray[0+currentHundred].liveness, beegArray[99+currentHundred].liveness, m%100),
+            speechiness: lerp(beegArray[0+currentHundred].speechiness, beegArray[99+currentHundred].speechiness, m%100),
+            valence: lerp(beegArray[0+currentHundred].valence, beegArray[99+currentHundred].valence, m%100),
         };
 
         beegArray[m] = Object.assign(beegArray[m], obj);
@@ -83,6 +66,12 @@ function recommendationLoop(track)
 
     return js;
 }
+
+function lerp(begin, end, index)
+{
+    return begin + (((index % 100) / 99) * (end - begin));
+}
+
 
 function getAudioFeatures(token, track)
 {
