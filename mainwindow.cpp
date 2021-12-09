@@ -8,7 +8,7 @@
 #include <QObject>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-
+#include <QMovie>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,6 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowIcon(QIcon(":/images/soundwave.png"));
     ui->toolButton->setIcon(QIcon(":/images/play.png"));
     ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
+
+    QMovie *movie = new QMovie(":/images/logo.gif");
+
+    ui->label_3->setMovie(movie);
+    movie->start();
 
     ui->loadMore->hide();
 
@@ -62,7 +67,7 @@ void MainWindow::printNetworkResults()
       //  ui->listWidget->addItem(QString::number((i)));
     //}
     QString query = ui->lineEdit->text();
-
+    ui->stackedWidget->setCurrentIndex(2);
     if (query == "") {
         QMessageBox msgBoxError;
         msgBoxError.setText("Please enter a song in the search box!");
