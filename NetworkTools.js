@@ -56,7 +56,7 @@ function recommendationLoop(track)
             valence: lerp(beegArray[0+currentHundred].valence, beegArray[99+currentHundred].valence, m%100),
         };
 
-        beegArray.push(obj);
+        beegArray[m] = Object.assign(beegArray[m], obj);
     }
 
 
