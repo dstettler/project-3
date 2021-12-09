@@ -2,5 +2,6 @@
     <qresource prefix="/images">
         <file>pause.png</file>
         <file>play.png</file>
+        <file>wavelogo.png</file>
     </qresource>
 </RCC>
