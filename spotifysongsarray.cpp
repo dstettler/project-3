@@ -11,6 +11,7 @@
 // Loads the .csv into this array object
 SpotifySongsArray::SpotifySongsArray(QString filepath, QProgressDialog* dialog)
 {
+
     const int MAXVALS = 200000;
 
     QFile file(filepath);
@@ -52,8 +53,6 @@ SpotifySongsArray::SpotifySongsArray(QString filepath, QProgressDialog* dialog)
 
         song.energy = (list.at(10)).toDouble();
 
-        song.key = (list.at(11)).toInt();
-
         song.loudness = (list.at(12)).toDouble();
 
         song.mode = ((list.at(13)).toInt() == 0) ? false : true;
@@ -71,10 +70,6 @@ SpotifySongsArray::SpotifySongsArray(QString filepath, QProgressDialog* dialog)
         song.tempo = (list.at(19)).toFloat();
 
         song.durationMs = (list.at(20)).toUInt();
-
-        song.timeSignature = (list.at(21)).toFloat();
-
-        song.year = (list.at(22)).toUInt();
 
         song.releaseDate = QString::fromUtf8(list.at(23));
 
@@ -116,6 +111,11 @@ SpotifySong::SpotifySong(QJsonObject obj)
     albumArtUrl = obj.find("album")->toObject().find("images")->toArray().at(0).toString();
 }
 
+SpotifySong::SpotifySong()
+{
+    // Yes this does literally nothing
+}
+
 //Functions for Adj List
 
 void AdjList::insert(SpotifySong newSong) {
@@ -139,15 +139,15 @@ SpotifySong* AdjList::search(QString req) {
 void AdjList::updateAdj() {
     for (unsigned int i = 1; i < nodeList.size(); i++) {
          //Add every node to the adj list of the source node
-         source.adjNodes.push_back(nodeList[i]);
+         source->adjNodes.push_back(nodeList[i]);
     }
 }
 
 QVector<SpotifySong>& AdjList::BFS() {
 
 
-    for (auto i : source.adjNodes) {
-        if (simScore(&source, i) > 0.0 && simScore(&source, i) < 0.05) {
+    for (auto i : source->adjNodes) {
+        if (simScore(source, i) > 0.0 && simScore(source, i) < 0.05) {
             visited.push_back(*i);
         }
     }
@@ -169,10 +169,17 @@ double AdjList::simScore(SpotifySong* src, SpotifySong* adj) {
     return score;
 }
 
-AdjList::AdjList() {
+AdjList::AdjList()
+{
+    source = nullptr;
+}
 
+AdjList::AdjList (SpotifySong* src) {
+    source = src;
 }
 
 SpotifySongsArray::SpotifySongsArray(QJsonObject sourceSong) {
-
+    SpotifySong* s = new SpotifySong(sourceSong);
+    AdjList temp(s);
+    graphSSA = temp;
 }

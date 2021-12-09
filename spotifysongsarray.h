@@ -42,21 +42,22 @@ struct SpotifySong
 
 
     SpotifySong(QJsonObject obj);
+    SpotifySong();
 
 
     //Adjacent Songs vector
-    std::vector<SpotifySong*> adjNodes;
+    QVector<SpotifySong*> adjNodes;
 };
 
 
 class AdjList {
     //Could use this to easily get the source
     //We would create this object in the mainwindow and set the source here
-    SpotifySong source;
+    SpotifySong* source;
 
 
     //Contains original song and all similar songs
-    std::vector<SpotifySong*> nodeList;
+    QVector<SpotifySong*> nodeList;
     QVector<SpotifySong> visited;
 
 
@@ -64,7 +65,9 @@ class AdjList {
 
 public:
     void insert(SpotifySong newSong);
+
     AdjList();
+    AdjList(SpotifySong* src);
 
     //I dont see why we need removal capability
 
