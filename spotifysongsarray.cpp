@@ -15,7 +15,7 @@ SpotifySongsArray::SpotifySongsArray(QString filepath, QProgressDialog* dialog)
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        qDebug () << "what";
+        qDebug() << "what";
     }
 
     // Read over the csv metadata, it isn't needed here
@@ -77,7 +77,8 @@ SpotifySongsArray::SpotifySongsArray(QString filepath, QProgressDialog* dialog)
         song.releaseDate = QString::fromUtf8(list.at(23));
 
 
-        songs.push_back(song);
+        //songs.push_back(song);
+        graphSSA.insert(song);
 
         dialog->setValue(i);
         QApplication::processEvents();
@@ -86,8 +87,68 @@ SpotifySongsArray::SpotifySongsArray(QString filepath, QProgressDialog* dialog)
     file.close();
 }
 
-SpotifySong SpotifySongsArray::at(unsigned int i)
-{
-    return songs.at(i);
+//SpotifySong SpotifySongsArray::at(unsigned int i)
+//{
+//    return songs.at(i);
+//}
+
+//Functions for Adj List
+
+void AdjList::insert(SpotifySong newSong) {
+    SpotifySong* insertSong = &newSong;
+    nodeList.push_back(insertSong);
 }
 
+SpotifySong* AdjList::search(QString req) {
+    //req is song id
+    SpotifySong* result = nullptr;
+    for (auto i : nodeList) {
+        if (i->id == req) {
+            result = i;
+            return result;
+        }
+    }
+    //Returns nullptr if we dont find a match
+    return result;
+}
+
+void AdjList::updateAdj() {
+    for (unsigned int i = 1; i < nodeList.size(); i++) {
+         //Add every node to the adj list of the source node
+         source.adjNodes.push_back(nodeList[i]);
+    }
+}
+
+QVector<SpotifySong>& AdjList::BFS() {
+
+
+    for (auto i : source.adjNodes) {
+        if (simScore(&source, i) > 0.0 && simScore(&source, i) < 0.05) {
+            visited.push_back(*i);
+        }
+    }
+    return visited;
+}
+
+double AdjList::simScore(SpotifySong* src, SpotifySong* adj) {
+    //Score set to a default -1 to be updated
+    double score = -1;
+    //Composite score to be
+    double avgSrc = 0;
+    double avgAdj = 0;
+    //Evaluate score
+    avgSrc = (src->danceability + src->energy + src->speechiness + src->accousticness + src->instrumentalness + src->liveness + src->valence) / double(7);
+    avgAdj = (adj->danceability + adj->energy + adj->speechiness + adj->accousticness + adj->instrumentalness + adj->liveness + adj->valence) / double(7);
+
+    //Final Calculation
+    score = abs(avgSrc - avgAdj);
+    return score;
+}
+
+AdjList::AdjList() {
+
+}
+
+SpotifySongsArray::SpotifySongsArray(QJsonObject sourceSong) {
+
+}
