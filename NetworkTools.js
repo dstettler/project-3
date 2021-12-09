@@ -39,7 +39,7 @@ function recommendationLoop(track)
     var currentHundred = -1;
     for (let m = 0; m < beegArray.length; m++)
     {
-        if (m % 100 == 0)
+        if (m % 100 == 0 && currentHundred + 1 < featuresRes.length)
             currentHundred++;
 
         let obj = {
@@ -47,13 +47,13 @@ function recommendationLoop(track)
             // beginning + ((i / 99) * (end - beginning))
             //
             // This is very messy I know I am sorry
-            accousticness: lerp(beegArray[0+currentHundred].accousticness, beegArray[99+currentHundred].accousticness, m%100),
-            danceability: lerp(beegArray[0+currentHundred].danceability, beegArray[99+currentHundred].danceability, m%100),
-            energy: lerp(beegArray[0+currentHundred].energy, beegArray[99+currentHundred].energy, m%100),
-            instrumentalness: lerp(beegArray[0+currentHundred].instrumentalness, beegArray[99+currentHundred].instrumentalness, m%100),
-            liveness: lerp(beegArray[0+currentHundred].liveness, beegArray[99+currentHundred].liveness, m%100),
-            speechiness: lerp(beegArray[0+currentHundred].speechiness, beegArray[99+currentHundred].speechiness, m%100),
-            valence: lerp(beegArray[0+currentHundred].valence, beegArray[99+currentHundred].valence, m%100),
+            accousticness: lerp(featuresRes[0+currentHundred].accousticness, featuresRes[1+currentHundred].accousticness, m%100),
+            danceability: lerp(featuresRes[0+currentHundred].danceability, featuresRes[1+currentHundred].danceability, m%100),
+            energy: lerp(featuresRes[0+currentHundred].energy, featuresRes[1+currentHundred].energy, m%100),
+            instrumentalness: lerp(featuresRes[0+currentHundred].instrumentalness, featuresRes[1+currentHundred].instrumentalness, m%100),
+            liveness: lerp(featuresRes[0+currentHundred].liveness, featuresRes[1+currentHundred].liveness, m%100),
+            speechiness: lerp(featuresRes[0+currentHundred].speechiness, featuresRes[1+currentHundred].speechiness, m%100),
+            valence: lerp(featuresRes[0+currentHundred].valence, featuresRes[1+currentHundred].valence, m%100),
         };
 
         beegArray[m] = Object.assign(beegArray[m], obj);
@@ -90,7 +90,7 @@ function getAudioFeatures(token, track)
     }
     else
     {
-        return "error";
+        return "msg: error";
     }
 }
 
