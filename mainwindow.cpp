@@ -34,10 +34,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->label_3->setMovie(frontLogo);
     frontLogo->start();
 
+    songArray = nullptr;
     ui->loadMore->hide();
     ui->actionResults->setEnabled(false);
     songId = nullptr;
-    songs = nullptr;
     songOneToggle = false;
     songTwoToggle = false;
     loaded = false;
@@ -51,7 +51,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete net;
-    delete songs;
+    delete songArray;
 }
 
 void MainWindow::printNetworkResults()
@@ -123,8 +123,15 @@ void MainWindow::printNetworkResults()
 
                    auto conn = std::make_shared<QMetaObject::Connection>();
                    *conn = connect(this, &MainWindow::recommendedCompleted, [=] (QJsonArray obj) {
-                       for (int i = 0; i < obj.size(); i++) {
 
+
+                       songArray = new SpotifySongsArray(obj[0].toObject());
+
+
+                       for (int i = 1; i < obj.size(); i++) {
+                           SpotifySong temp;
+
+                           songArray->graphSSA.
                            QJsonObject songInfo = obj.at(i).toObject();
                            QVariantMap songInfoMap = songInfo.toVariantMap();
                            QVariantMap albumInfoMap = songInfoMap["album"].toJsonObject().toVariantMap();
@@ -133,6 +140,7 @@ void MainWindow::printNetworkResults()
 
                            QString artString = temp2["url"].toString();
                            QVariantMap originalMap = original.toVariantMap();
+
                            QVariantMap ogMapArtist = originalMap["artists"].toJsonArray().toVariantList().at(0).toJsonObject().toVariantMap();
 
                            originalString = originalMap["name"].toString() + " by " + ogMapArtist["name"].toString();

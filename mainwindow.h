@@ -50,7 +50,6 @@ private:
     Ui::MainWindow *ui;
     NetworkTools* net;
     QString songId;
-    SpotifySongsArray* songs;
     QVariantMap art;
     QVariantMap songToPlay;
     QString songToAdd;
@@ -66,6 +65,8 @@ private:
     bool loaded;
     QPixmap playButton;
     QPixmap pauseButton;
+    SpotifySongsArray* songArray;
+
 
 
 };
