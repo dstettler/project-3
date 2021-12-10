@@ -31,7 +31,7 @@ color: rgb(255,255,255);</string>
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_15">
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -138,39 +138,7 @@ border-radius: 25%;</string>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="3">
-             <layout class="QGridLayout" name="gridLayout_4">
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Album</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Name</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>Artist</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Tempo</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="2" column="4" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+            <item row="2" column="5" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
              <widget class="QToolButton" name="toolButton_2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -201,7 +169,20 @@ border-radius: 25%;</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="2" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+            <item row="0" column="7">
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>800</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="2" column="3" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
              <widget class="QToolButton" name="toolButton">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -241,7 +222,59 @@ border-radius: 25%;</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="2">
+            <item row="0" column="6">
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="1">
+               <widget class="QLabel" name="artist2">
+                <property name="styleSheet">
+                 <string notr="true">border: 1px dotted rgb(255,255,255);
+
+</string>
+                </property>
+                <property name="text">
+                 <string>Artist</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="name2">
+                <property name="styleSheet">
+                 <string notr="true">border: 1px dotted rgb(255,255,255);
+
+</string>
+                </property>
+                <property name="text">
+                 <string>Song</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="album2">
+                <property name="styleSheet">
+                 <string notr="true">border: 1px dotted rgb(255,255,255);
+
+</string>
+                </property>
+                <property name="text">
+                 <string>Album</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="tempo2">
+                <property name="styleSheet">
+                 <string notr="true">border: 1px dotted rgb(255,255,255);
+
+</string>
+                </property>
+                <property name="text">
+                 <string>Tempo</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="3">
              <widget class="QLabel" name="label">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -269,7 +302,7 @@ border-radius: 25%;</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="4" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+            <item row="0" column="5" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
              <widget class="QLabel" name="label_2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -307,52 +340,70 @@ border-radius: 25%;</string>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>650</width>
+                <width>500</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
-            <item row="0" column="5">
-             <layout class="QGridLayout" name="gridLayout_8">
-              <item row="0" column="1">
-               <widget class="QLabel" name="label_10">
-                <property name="text">
-                 <string>Artist</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>Name </string>
-                </property>
-               </widget>
-              </item>
+            <item row="0" column="2">
+             <layout class="QGridLayout" name="gridLayout_4">
               <item row="1" column="0">
-               <widget class="QLabel" name="label_11">
+               <widget class="QLabel" name="album1">
+                <property name="styleSheet">
+                 <string notr="true">border: 1px dotted rgb(255,255,255);</string>
+                </property>
                 <property name="text">
                  <string>Album</string>
                 </property>
                </widget>
               </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="artist1">
+                <property name="styleSheet">
+                 <string notr="true">border: 1px dotted rgb(255,255,255);
+
+</string>
+                </property>
+                <property name="text">
+                 <string>Artist</string>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="1">
-               <widget class="QLabel" name="label_12">
+               <widget class="QLabel" name="tempo1">
+                <property name="styleSheet">
+                 <string notr="true">border: 1px dotted rgb(255,255,255);
+
+</string>
+                </property>
                 <property name="text">
                  <string>Tempo</string>
                 </property>
                </widget>
               </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="name1">
+                <property name="styleSheet">
+                 <string notr="true">border: 1px dotted rgb(255,255,255);
+
+</string>
+                </property>
+                <property name="text">
+                 <string>Song</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
-            <item row="0" column="6">
-             <spacer name="horizontalSpacer_2">
+            <item row="0" column="4">
+             <spacer name="horizontalSpacer_3">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>800</width>
+                <width>500</width>
                 <height>20</height>
                </size>
               </property>
@@ -426,37 +477,139 @@ background-color: rgb(38,38,38);
       </property>
      </widget>
     </item>
-    <item alignment="Qt::AlignHCenter">
-     <widget class="QPushButton" name="loadMore">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>200</width>
-        <height>35</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>200</width>
-        <height>60</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color: rgb(255,255,255);
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+         <widget class="QPushButton" name="bfs">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>201</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255,255,255);
 
 background-color: rgb(29,185,84);
 
 border-radius: 25%;</string>
-      </property>
-      <property name="text">
-       <string>Load More Songs</string>
-      </property>
-     </widget>
+          </property>
+          <property name="text">
+           <string>Breadth First Search</string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+         <widget class="QLabel" name="bfsTime">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="loadMore">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>60</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255,255,255);
+
+background-color: rgb(29,185,84);
+
+border-radius: 25%;</string>
+        </property>
+        <property name="text">
+         <string>Load More Songs</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+         <widget class="QPushButton" name="dfs">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255,255,255);
+
+background-color: rgb(29,185,84);
+
+border-radius: 25%;</string>
+          </property>
+          <property name="text">
+           <string>Depth First Search</string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+         <widget class="QLabel" name="dfsTime">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

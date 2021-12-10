@@ -46,15 +46,18 @@ private slots:
 
     void on_actionResults_triggered();
 
+    void on_bfs_clicked();
+
+    void on_dfs_clicked();
+
 private:
     Ui::MainWindow *ui;
     NetworkTools* net;
     QString songId;
-    QVariantMap art;
-    QVariantMap songToPlay;
-    QString songToAdd;
-    QJsonObject original;
-    QString originalString;
+    //QVariantMap art;
+    //QVariantMap songToPlay;
+    //QJsonObject original;
+    //QString originalString;
     QString songClicked;
     bool songOneToggle;
     bool songTwoToggle;
@@ -66,7 +69,7 @@ private:
     QPixmap playButton;
     QPixmap pauseButton;
     SpotifySongsArray* songArray;
-
+    SpotifySong original;
 
 
 };

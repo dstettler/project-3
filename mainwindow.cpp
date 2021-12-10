@@ -9,6 +9,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QMovie>
+#include <chrono>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -70,8 +71,15 @@ void MainWindow::printNetworkResults()
     //gets user input
     QString query = ui->lineEdit->text();
     ui->listWidget->clear();
-    art.clear();
+    //art.clear();
     ui->label_2->clear();
+    if (songArray) {
+        songArray->graphSSA.clear();
+        delete songArray;
+    }
+    //songArray = nullptr;
+
+
 
     if (ui->actionResults->isEnabled() == false) {
         ui->actionResults->setEnabled(true);
@@ -104,9 +112,9 @@ void MainWindow::printNetworkResults()
 
 
 
-        art.clear();
-        songToPlay.clear();
-        originalString.clear();
+        //art.clear();
+        //songToPlay.clear();
+        //originalString.clear();
         ui->loadMore->show();
 
 
@@ -124,15 +132,18 @@ void MainWindow::printNetworkResults()
                    auto conn = std::make_shared<QMetaObject::Connection>();
                    *conn = connect(this, &MainWindow::recommendedCompleted, [=] (QJsonArray obj) {
 
-
+                        //insert source here
                        songArray = new SpotifySongsArray(obj[0].toObject());
 
 
+                       SpotifySong temp(obj[0].toObject());
+                       original = temp;
+
                        for (int i = 1; i < obj.size(); i++) {
 
-                           SpotifySong songToAdd(obj[i].toObject());
+                           SpotifySong* songToAdd = new SpotifySong(obj[i].toObject());
 
-                            songArray->graphSSA.insert(songToAdd);
+                           songArray->graphSSA.insert(songToAdd);
 
                            /*QJsonObject songInfo = obj.at(i).toObject();
                            QVariantMap songInfoMap = songInfo.toVariantMap();
@@ -166,6 +177,8 @@ void MainWindow::printNetworkResults()
                            */
 
                        }
+                       songArray->graphSSA.updateAdj();
+
                        lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();
                        emit songListCompleted();
 
@@ -188,7 +201,21 @@ void MainWindow::printNetworkResults()
 
 void MainWindow::itemClickedSlot (QListWidgetItem * itemClicked)
 {
+
+    QVector<SpotifySong> order = songArray->graphSSA.BFS();
+
+    SpotifySong playing;
+
+    for (int i = 0; i < order.size(); i++) {
+        QString temp = order.at(i).name + " by " + order.at(i).artists;
+
+        if (temp == itemClicked->text()) {
+            playing = order.at(i);
+            break;
+        }
+    }
     songClicked = itemClicked->text();
+
     songTwoToggle = false;
     player2->stop();
     ui->toolButton_2->setEnabled(true);
@@ -196,7 +223,7 @@ void MainWindow::itemClickedSlot (QListWidgetItem * itemClicked)
 
     //qDebug() << songToPlay[songClicked].toString();
 
-    if (songToPlay[songClicked].toString() == "") {
+    if (playing.previewUrl == "") {
         ui->toolButton_2->setEnabled(false);
         ui->toolButton_2->setText("Song Preview Not Available");
         ui->toolButton_2->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
@@ -211,7 +238,13 @@ void MainWindow::itemClickedSlot (QListWidgetItem * itemClicked)
 
     connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::downloadImageDone2);
 
-    QUrl image = QUrl(art[itemClicked->text()].toString());
+    ui->name2->setText(playing.name);
+    ui->album2->setText(playing.album);
+    QString tempo = "Tempo" + net->getTempo(playing.id);
+    ui->tempo2->setText(tempo);
+    ui->artist2->setText(playing.artists);
+
+    QUrl image = QUrl(playing.albumArtUrl);
 
     QNetworkRequest request(image);
     manager->get(request);
@@ -223,9 +256,9 @@ void MainWindow::itemClickedSlot (QListWidgetItem * itemClicked)
 void MainWindow::itemReleasedSlot ()
 {
 
-    qDebug() << songToPlay[originalString].toString();
+    //qDebug() << songToPlay[originalString].toString();
     ui->label_2->clear();
-    if (songToPlay[originalString].toString() == "") {
+    if (original.previewUrl == "") {
         ui->toolButton->setEnabled(false);
         ui->toolButton->setText("Song Preview Not Available");
         ui->toolButton->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
@@ -244,7 +277,17 @@ void MainWindow::itemReleasedSlot ()
     ui->toolButton_2->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
     ui->toolButton_2->setText("Click on a recommended song first!");
 
-    QUrl image2 = QUrl(art[originalString].toString());
+    ui->listWidget->addItem("Select Traversal Algorithm First!");
+
+
+    ui->name1->setText(original.name);
+    ui->album1->setText(original.album);
+    QString tempo = "Tempo: " + net->getTempo(original.id);
+
+    ui->tempo1->setText(tempo);
+    ui->artist1->setText(original.artists);
+
+    QUrl image2 = QUrl(original.albumArtUrl);
     QNetworkRequest request2(image2);
     manager->get(request2);
 }
@@ -277,9 +320,11 @@ void MainWindow::on_actionHome_triggered()
 void MainWindow::playSongOne() {
     player2->stop();
     songTwoToggle = false;
+
+
     ui->toolButton_2->setIcon(QIcon(":/images/play.png"));
     if (!songOneToggle) {
-        player->setMedia(QUrl(songToPlay[originalString].toString()));
+        player->setMedia(QUrl(original.previewUrl));
         player->setVolume(30);
         player->play();
         songOneToggle = true;
@@ -301,9 +346,24 @@ void MainWindow::playSongTwo() {
     player->stop();
     songOneToggle = false;
     ui->toolButton->setIcon(QIcon(":/images/play.png"));
+
+    QVector<SpotifySong> order = songArray->graphSSA.BFS();
+
+    SpotifySong playing;
+
+    for (int i = 0; i < order.size(); i++) {
+        QString temp = order.at(i).name + " by " + order.at(i).artists;
+
+        if (temp == songClicked) {
+            playing = order.at(i);
+            break;
+        }
+    }
+
+
     if (!songTwoToggle) {
 
-        player2->setMedia(QUrl(songToPlay[songClicked].toString()));
+        player2->setMedia(QUrl(playing.previewUrl));
         player2->setVolume(30);
         player2->play();
         songTwoToggle = true;
@@ -334,9 +394,7 @@ void MainWindow::downloadPlayDoneOg(QNetworkReply* result) {
 
 
 void MainWindow::downloadPauseDoneOg(QNetworkReply* result) {
-
     pauseButton.loadFromData(result->readAll());
-
 }
 
 
@@ -357,7 +415,11 @@ void MainWindow::printNetworkResultsLoadMore() {
 
         for (int i = 0; i < obj.size(); i++) {
 
-            QJsonObject songInfo = obj.at(i).toObject();
+            SpotifySong* songToAdd = new SpotifySong(obj[i].toObject());
+
+             songArray->graphSSA.insert(songToAdd);
+
+            /*QJsonObject songInfo = obj.at(i).toObject();
             QVariantMap songInfoMap = songInfo.toVariantMap();
             QVariantMap albumInfoMap = songInfoMap["album"].toJsonObject().toVariantMap();
             QVariantList temp = albumInfoMap["images"].toList();
@@ -379,9 +441,10 @@ void MainWindow::printNetworkResultsLoadMore() {
             songToPlay[songToAdd] = songInfoMap["preview_url"].toString();
 
             ui->listWidget->addItem(songToAdd);
-            QObject::disconnect(*conn);
+            */
 
         }
+        songArray->graphSSA.updateAdj();
         lastToken = obj.at(obj.size() - 1).toObject().toVariantMap()["id"].toString();
         emit songListCompleted();
         QObject::disconnect(*conn);
@@ -394,5 +457,60 @@ void MainWindow::printNetworkResultsLoadMore() {
 void MainWindow::on_actionResults_triggered()
 {
     ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+void MainWindow::on_bfs_clicked()
+{
+    ui->listWidget->clear();
+
+    //clock_t start = clock();
+    auto timerName = std::chrono::steady_clock::now();
+
+    auto temp = songArray->graphSSA.BFS();
+    std::chrono::duration<double> duration = std::chrono::steady_clock::now() - timerName;
+
+
+
+    /*clock_t stop = clock();
+    clock_t tick = stop - start;
+    double time = tick / (double)CLOCKS_PER_SEC;
+    time*= 100;
+    */
+
+    for (auto i : temp) {
+
+        ui->listWidget->addItem(i.nameby);
+    }
+    ui->bfsTime->setText(QString::number(duration.count()));
+}
+
+
+void MainWindow::on_dfs_clicked()
+{
+    ui->listWidget->clear();
+
+    //clock_t start = clock();
+
+    auto timerName = std::chrono::steady_clock::now();
+
+
+    auto temp = songArray->graphSSA.DFS();
+    std::chrono::duration<double> duration = std::chrono::steady_clock::now() - timerName;
+
+
+    /*clock_t stop = clock();
+    clock_t tick = stop - start;
+    double time = tick / (double)CLOCKS_PER_SEC;
+    time *= 100;
+    */
+
+
+    for (auto i : temp) {
+
+        ui->listWidget->addItem(i.nameby);
+    }
+    ui->dfsTime->setText(QString::number(duration.count()));
+
 }
 

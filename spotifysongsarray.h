@@ -5,6 +5,11 @@
 #include <QString>
 #include <QProgressDialog>
 #include <vector>
+#include <QSet>
+#include <QQueue>
+#include <QStack>
+#include <unordered_set>
+
 // "id"	"name"	"album"	"album_id"	"artists"	"artist_ids"	"track_number"	"disc_number"
 // "explicit"	"danceability"	"energy"	"key"	"loudness"	"mode"	"speechiness"	"acousticness"
 // "instrumentalness"	"liveness"	"valence"	"tempo"	"duration_ms"	"time_signature"	"year"	"release_date"
@@ -62,6 +67,10 @@ class AdjList {
 
 
 
+    QVector<SpotifySong> toReturnBFS;
+    QVector<SpotifySong> toReturnDFS;
+
+
 
 public:
     void insert(SpotifySong newSong);
@@ -80,7 +89,10 @@ public:
     void updateAdj();
 
     //BFS returns a vector of most similar songs
+    //BFS returns a vector of most similar songs
     QVector<SpotifySong>& BFS();
+        //DFS returns vector of similar songs
+    QVector<SpotifySong>& DFS();
 
     //Find similarity score between source node and adj node
     double simScore(SpotifySong* src, SpotifySong* adj);
@@ -88,7 +100,11 @@ public:
     //Update Adjacent Nodes (we need to create a threshold of similarity)
 
     void clear() {
+        for (auto node : nodeList) {
+            delete node;
+        }
         nodeList.clear();
+
     }
 };
 
@@ -97,7 +113,7 @@ struct SpotifySongsArray
     AdjList graphSSA;
 
 
-    SpotifySongsArray(QString filepath, QProgressDialog* dialog);
+    //SpotifySongsArray(QString filepath, QProgressDialog* dialog);
 
     SpotifySongsArray(QJsonObject sourceSong);
     //SpotifySong at(unsigned int i);
