@@ -240,7 +240,7 @@ void MainWindow::itemClickedSlot (QListWidgetItem * itemClicked)
 
     ui->name2->setText(playing.name);
     ui->album2->setText(playing.album);
-    QString tempo = "Tempo" + net->getTempo(playing.id);
+    QString tempo = "Tempo: " + net->getTempo(playing.id);
     ui->tempo2->setText(tempo);
     ui->artist2->setText(playing.artists);
 
@@ -277,9 +277,16 @@ void MainWindow::itemReleasedSlot ()
     ui->toolButton_2->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
     ui->toolButton_2->setText("Click on a recommended song first!");
 
-    ui->listWidget->addItem("Select Traversal Algorithm First!");
+    auto temp = songArray->graphSSA.BFS();
 
+    for (auto i : temp) {
 
+        ui->listWidget->addItem(i.nameby);
+    }
+    ui->name2->setText("Song");
+    ui->album2->setText("Album");
+    ui->tempo2->setText("Tempo");
+    ui->artist2->setText("Artist");
     ui->name1->setText(original.name);
     ui->album1->setText(original.album);
     QString tempo = "Tempo: " + net->getTempo(original.id);
@@ -462,7 +469,6 @@ void MainWindow::on_actionResults_triggered()
 
 void MainWindow::on_bfs_clicked()
 {
-    ui->listWidget->clear();
 
     //clock_t start = clock();
     auto timerName = std::chrono::steady_clock::now();
@@ -478,19 +484,14 @@ void MainWindow::on_bfs_clicked()
     time*= 100;
     */
 
-    for (auto i : temp) {
-
-        ui->listWidget->addItem(i.nameby);
-    }
     ui->bfsTime->setText(QString::number(duration.count()));
+
+
+
 }
-
-
 void MainWindow::on_dfs_clicked()
 {
-    ui->listWidget->clear();
 
-    //clock_t start = clock();
 
     auto timerName = std::chrono::steady_clock::now();
 
@@ -506,10 +507,7 @@ void MainWindow::on_dfs_clicked()
     */
 
 
-    for (auto i : temp) {
 
-        ui->listWidget->addItem(i.nameby);
-    }
     ui->dfsTime->setText(QString::number(duration.count()));
 
 }
