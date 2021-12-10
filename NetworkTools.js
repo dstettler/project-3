@@ -2,7 +2,11 @@ function recommendationLoop(track)
 {
     console.log("Started loop function");
     var beegArray = [];
-    var token = "";
+    var token = getToken();
+
+    let initTrack = JSON.parse(getTrack(token, track));
+    beegArray.push(initTrack);
+
     for (let i = 0; i < 10; i++)
     {
         // I have no idea when the tokens expire so this is to avoid token timeouts
@@ -41,7 +45,7 @@ function recommendationLoop(track)
     var currentHundred = -1;
     for (let m = 0; m < beegArray.length; m++)
     {
-        if (m % 100 == 0 && currentHundred + 1 < featuresRes.length)
+        if (m % 101 == 0 && currentHundred + 1 < featuresRes.length)
         {
             currentHundred++;
         }
@@ -90,6 +94,28 @@ function getAudioFeatures(token, track)
     console.log("Getting features for track: " + track)
     var http = new XMLHttpRequest();
     var url = `https://api.spotify.com/v1/audio-features/${track}`;
+    http.open("GET", url, false);
+
+    http.setRequestHeader("Content-Type", "application/json");
+    http.setRequestHeader("Authorization", `Bearer ${token}`);
+
+    http.send(null);
+
+    if (http.status === 200)
+    {
+        console.log("Response: " + http.responseText);
+        return http.responseText;
+    }
+    else
+    {
+        return "{ msg: error }";
+    }
+}
+
+function getTrack(token, track)
+{
+    var http = new XMLHttpRequest();
+    var url = `https://api.spotify.com/v1/tracks/${track}`;
     http.open("GET", url, false);
 
     http.setRequestHeader("Content-Type", "application/json");
