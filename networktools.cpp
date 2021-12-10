@@ -280,11 +280,12 @@ void NetworkTools::recommendationsLoop(QString songId, MainWindow *parent)
 
         QString list;
         QVariant returned;
+        QVariant arg = QVariant::fromValue(songId);
 
         // Do not run a synchronous network request on the UI thread, you say?
         // Nay I say, nay
         // This *will* freeze the process
-        QMetaObject::invokeMethod(object, "doRecLoop", Q_RETURN_ARG(QVariant, returned), Q_ARG(QString, songId));
+        QMetaObject::invokeMethod(object, "doRecLoop", Q_RETURN_ARG(QVariant, returned), Q_ARG(QVariant, arg));
 
         list = returned.toString();
 
